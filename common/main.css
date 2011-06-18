@@ -31,6 +31,18 @@ label {
   margin:15px 0px;
 }
 
+#all-tasks details.p_0 summary{
+  color:red;
+}
+
+#all-tasks details.p_1 summary{
+  color:blue;
+}
+
+#all-tasks details.p_2 summary{
+  color:green;
+}
+
 #all-tasks span.description {
   margin:5px;
 }
@@ -47,4 +59,14 @@ label {
   top:45px;
   left:10px;
   width:300px;
+}
+
+#last-completed h3 {
+  color:green;
+}
+
+#commands {
+  position:fixed;
+  bottom:0px;
+  right:0px;
 }

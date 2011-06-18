@@ -11,6 +11,52 @@ var Todo = (function(){
     var task = {'title' : title, 'description' : description, 'priority' : priority};
     Repository.createTask(task, function(){
       alert('task created!');
+      $(document).trigger('todo:changed');
+    });
+  };
+  
+  that.clear = function () {
+    Repository.clear();
+    $(document).trigger('todo:changed');
+  };
+  
+  that.loadSampleData = function () {
+    Repository.loadSampleData();
+    $(document).trigger('todo:changed');
+  };
+  
+  that.updateList = function () {
+    Repository.findNotDone(function (tasks) {
+      var $list = $('#all-tasks ul');
+      $list.empty();
+      for(i in tasks) {
+        var t = tasks[i];
+        var markup = "<details class='p_"+t.priority+"'><summary>"+t.title+"<input type='checkbox'/></summary><span class='description'>"+t.description+"</span></details>";
+        $list.append($('<li/>').html(markup));
+      }
+    });
+  };
+  
+  that.updateNewest = function () {
+    Repository.findNewest(function (tasks){
+      var $list = $('#last-created ul');
+      $list.empty();
+      for(i in tasks) {
+        var t = tasks[i];
+        $list.append($('<li/>').html(t.title));
+      }
+    });
+  };
+  
+  that.updateLastCompleted = function () {
+    Repository.findLastCompleted(function (tasks){
+      var $list = $('#last-completed ul');
+      $list.empty();
+      for(i in tasks) {
+        var t = tasks[i];
+        $list.append($('<li/>').html(t.title));
+      }
+      
     });
   };
 
@@ -31,5 +77,11 @@ $(document).ready(function(){
       alert('errors during task creation');
     }
   });
+  
+  $(document).bind('todo:changed', function() {
+    Todo.updateList();
+    Todo.updateNewest();
+    Todo.updateLastCompleted();
+  })
 
 });
