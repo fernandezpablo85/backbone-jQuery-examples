@@ -1,12 +1,15 @@
 body {
   font-family:monospace;
+  background-color:#FFE;
 }
+
 section {
   border:1px solid gray;
   padding:15px;
-  margin:15px;
+  margin:20px 15px;
   width:350px;
-  box-shadow:-10px 10px  #CCC;
+  box-shadow:-10px 10px 15px  #CCC;
+  background-color:#FFF;
 }
 
 h1 {
@@ -23,6 +26,16 @@ label {
   float:left;
 }
 
-#new-task {
+#last-created {
+  position:fixed;
+  top:45px;
+  right:10px;
+  width:300px;
+}
 
+#last-completed {
+  position:fixed;
+  top:45px;
+  left:10px;
+  width:300px;
 }
