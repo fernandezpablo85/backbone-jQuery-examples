@@ -1,0 +1,17 @@
+## Backbone / jQuery todo list
+
+# Motivation
+
+Test how backbone and jQuery behave on a js-heavy (or as heavy as time allows) application.
+
+# Directories
+
+ _jquery_ is where the jQuery app lives.
+
+ _backbone_ is where the bacbkone app lives.
+
+ _common_ is where common code to both apps go.
+
+# Questions?
+
+ fernandezpablo85@gmail.com
