@@ -26,6 +26,15 @@ label {
   float:left;
 }
 
+#all-tasks li {
+  list-style:none;
+  margin:15px 0px;
+}
+
+#all-tasks span.description {
+  margin:5px;
+}
+
 #last-created {
   position:fixed;
   top:45px;

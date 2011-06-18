@@ -5,7 +5,7 @@
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js'></script>
     <script src='../common/repository.js'></script>
     <script src='js/main.js'></script>
-    <link rel='stylesheet' href='style/main.css' />
+    <link rel='stylesheet' href='../common/main.css' />
   </head>
   <body>
     <div id='content'>
@@ -29,12 +29,24 @@
     <section id='all-tasks'>
       <h3>To-Do:</h3>
       <ul>
-        <li>task 1</li>
-        <li>task 2</li>
-        <li>task 1</li>
-        <li>task 2</li>
-        <li>task 1</li>
-        <li>task 2</li>
+        <li>
+          <details>
+            <summary>
+              Walk the dog
+              <input type='checkbox'/>
+            </summary>
+            <span class='description'>Find a park. Take the dog there.</span>
+          </details>
+        </li>
+        <li>
+          <details>
+            <summary>
+              Walk the dog
+              <input type='checkbox'/>
+            </summary>
+            <span class='description'>Find a park. Take the dog there.</span>
+          </details>
+        </li>
       </ul>
     </section>
     <section id='last-created'>
