@@ -8,6 +8,8 @@ var Repository = (function(){
     }
 
     var todo = JSON.parse(LS['todo']);
+    // all tasks are created as not completed by default.
+    task.done = false;
     todo['tasks'].push(task);
     LS['todo'] = JSON.stringify(todo);
     callback();
