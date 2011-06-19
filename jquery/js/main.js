@@ -31,7 +31,7 @@ var Todo = (function(){
       $list.empty();
       for(i in tasks) {
         var t = tasks[i];
-        var markup = "<details class='p_"+t.priority+"'><summary>"+t.title+"<input type='checkbox'/></summary><span class='description'>"+t.description+"</span></details>";
+        var markup = "<details class='p_"+t.priority+"'><summary>"+t.title+"<input type='checkbox' data-task-id='"+t.id+"'/></summary><span class='description'>"+t.description+"</span></details>";
         $list.append($('<li/>').html(markup));
       }
     });
@@ -56,8 +56,12 @@ var Todo = (function(){
         var t = tasks[i];
         $list.append($('<li/>').html(t.title));
       }
-      
     });
+    
+    that.complete = function (id) {
+      Repository.markCompleted(id);
+      $(document).trigger('todo:changed');
+    }
   };
 
   return that;
@@ -78,10 +82,18 @@ $(document).ready(function(){
     }
   });
   
+  // Listen to changes in the model.
   $(document).bind('todo:changed', function() {
     Todo.updateList();
     Todo.updateNewest();
     Todo.updateLastCompleted();
-  })
+  });
+  
+  // Manage task completion.
+  $('#all-tasks').delegate('input', 'change', function(event) {
+      var id = event.target.dataset.taskId;
+      if (confirm('Mark as completed?')) Todo.complete(id);
+  });
 
+  $(document).trigger('todo:changed');
 });
