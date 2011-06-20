@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>jQuery Todo List</title>
-    <script src='http://documentcloud.github.com/backbone/backbone-min.js'></script>
-    <script src='../common/repository.js'></script>
+    <title>Backbone Todo List</title>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js'></script>
+    <script src='http://documentcloud.github.com/underscore/underscore.js'></script>
+    <script src='http://documentcloud.github.com/backbone/backbone.js'></script>
+    <script src='js/repository.js'></script>
     <script src='js/main.js'></script>
     <link rel='stylesheet' href='../common/main.css' />
   </head>
@@ -28,33 +30,29 @@
     </section>
     <section id='all-tasks'>
       <h3>To-Do:</h3>
-      <ul>
-        <li>task 1</li>
-        <li>task 2</li>
-        <li>task 1</li>
-        <li>task 2</li>
-        <li>task 1</li>
-        <li>task 2</li>
-      </ul>
+      <ul></ul>
     </section>
     <section id='last-created'>
       <h3>Newest:</h3>
-      <ul>
-        <li>task 1</li>
-        <li>task 2</li>
-      </ul>
+      <ul></ul>
     </section>
     <section id='last-completed'>
       <h3>Last completed:</h3>
-      <ul>
-        <li>task 1</li>
-        <li>task 2</li>
-      </ul>
+      <ul></ul>
     </section>
     <section id='commands'>
-      <a href='#clear'>Clear localStorage</a>
-      <a href='#sample'>Load sample data</a>
+      <a href='#clear' onclick="Backbone.sync('delete', Tasks);">Clear all</a>
+      <a href='#sample' onclick="Backbone.sync('sample', Tasks)">Load sample data</a>
     </section>
     </div>
+  <script type='text/template' id='entry-template'>
+    <details class="p_<%= priority %>">
+      <summary>
+        <%= title %>
+        <input type="checkbox" data-task-id="<%= id %>">
+      </summary>
+      <span class="description"><%= description %></span>
+     </details>
+  </script>
   </body>
 </html>
