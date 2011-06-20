@@ -21,7 +21,7 @@ $(document).ready(function() {
     }
   });
 
-  var MainTaskEntry   = Backbone.View.extend({
+  var MainTaskEntry = Backbone.View.extend({
     tagName : 'li',
 
     template: _.template($('#entry-template').html()),
@@ -47,6 +47,23 @@ $(document).ready(function() {
       this.model.complete();
     }
   });
+  
+  var AuxConsole = Backbone.View.extend({
+
+    events : {
+      'click #clear' : 'clearLocalStorage',
+      'click #sample' : 'loadSampleData'
+    },
+    
+    clearLocalStorage : function () {
+      Backbone.sync('discard-all')
+    },
+    
+    loadSampleData : function () {
+      Backbone.sync('load-sample')
+    }
+  });
+  new AuxConsole({el : $('#commands')[0]});
 
   // Manage with a Bacbkone.View.
   $('#create-new-task-button').click(function() {
@@ -57,7 +74,7 @@ $(document).ready(function() {
     task.save({'title' : $('#title').val(), 'description' : $('#desc').val(), 'priority' : $('#priority').val()});
     new MainTaskEntry({ model : task }).render();
   });
-  
+
   var Util = {
     guid : function () {
       var S4 = function () {
@@ -68,23 +85,30 @@ $(document).ready(function() {
   }
 
   Backbone.sync = function (action, model, success, error) {
-    
+
     var save = function (task) {
       if (!localStorage['todo']) localStorage['todo'] = JSON.stringify({'tasks' : []});
       var tasks = JSON.parse(localStorage['todo']).tasks;
       tasks.push(task);
       localStorage['todo'] = JSON.stringify({'tasks': tasks});
     }
-    
+
     var update = function (task) {
       var tasks = JSON.parse(localStorage['todo']).tasks;
       tasks = _.reject(tasks, function(t){ return t.id === task.id });
       tasks.push(task);
       localStorage['todo'] = JSON.stringify({'tasks': tasks});
     }
+
     // load sample data.
+    if (action === 'load-sample') {
+      console.log('load em')
+    }
 
     // clear all data.
+    if  (action === 'discard-all') {
+      console.log('kill em')
+    }
 
     // retrieve all tasks.
 
