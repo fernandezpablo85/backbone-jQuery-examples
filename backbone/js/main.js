@@ -17,7 +17,7 @@ $(document).ready(function() {
       _.extend(att, _att, this.attributes);
       if (!att.title || att.title.length < 5) return "wrong title";
       if (!att.description || att.description.length < 5) return "wrong description";
-      if (!att.priority || ~[0,1,2].indexOf(att.priority)) return "wrong priority";
+      if (att.priority == undefined || !~[0,1,2].indexOf(+att.priority)) return "wrong priority";
     }
   });
 
@@ -87,6 +87,7 @@ $(document).ready(function() {
   Backbone.sync = function (action, model, success, error) {
 
     var save = function (task) {
+      task.set({'id': Util.guid});
       if (!localStorage['todo']) localStorage['todo'] = JSON.stringify({'tasks' : []});
       var tasks = JSON.parse(localStorage['todo']).tasks;
       tasks.push(task);
@@ -102,7 +103,11 @@ $(document).ready(function() {
 
     // load sample data.
     if (action === 'load-sample') {
-      console.log('load em')
+      for (var i = 0; i < 3; i++) {
+        var t = new Task();
+        t.save({'title' : 'task'+i, 'description': 'do something about:'+i, 'priority':i});
+        new MainTaskEntry({model: t}).render();
+      }
     }
 
     // clear all data.
@@ -114,7 +119,6 @@ $(document).ready(function() {
 
     // create new task.
     if (action === 'create' && model.constructor === Task) {
-      model.set({'id': Util.guid()});
       save(model);
     }
 
