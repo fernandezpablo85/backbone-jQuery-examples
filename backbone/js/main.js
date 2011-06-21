@@ -1,6 +1,5 @@
 $(document).ready(function() {
   
-  // Todo list item (Task).
   var Task = Backbone.Model.extend({
 
     defaults : {
@@ -8,8 +7,12 @@ $(document).ready(function() {
     },
 
     complete : function () {
-      this.set({'done' : true});
+      this.save({'done' : true});
       this.view.remove();
+    },
+    
+    completed : function () {
+      new NewEntryView({model : this}).render();
     },
 
     validate : function (_att) {
@@ -45,8 +48,23 @@ $(document).ready(function() {
     
     complete : function () {
       this.model.complete();
+      new LastCompletedEntry({model : this.model}).render();
     }
   });
+  
+  var MiniView = Backbone.View.extend({
+    tagName : 'span',
+    
+    template : _.template($('#mini-template').html()),
+    
+    render : function () {
+      $(this.el).html(this.template(this.model.toJSON()));
+      $(this.list).prepend(this.el);
+    }
+  });
+  
+  var LastCompletedEntry = MiniView.extend({'list' : '#last-completed ul'});
+  var NewEntryView = MiniView.extend({ 'list' : '#last-created ul'});
   
   var AuxConsole = Backbone.View.extend({
 
@@ -71,7 +89,10 @@ $(document).ready(function() {
     task.bind('error', function (object, msg) {
       alert('problems during creation: ' + msg);
     });
-    task.save({'title' : $('#title').val(), 'description' : $('#desc').val(), 'priority' : $('#priority').val()});
+    var success = function (model) {
+      model.completed();
+    };
+    task.save({'title' : $('#title').val(), 'description' : $('#desc').val(), 'priority' : $('#priority').val()}, {'success' : success});
     new MainTaskEntry({ model : task }).render();
   });
 
@@ -87,11 +108,12 @@ $(document).ready(function() {
   Backbone.sync = function (action, model, success, error) {
 
     var save = function (task) {
-      task.set({'id': Util.guid});
+      task.set({'id': Util.guid()});
       if (!localStorage['todo']) localStorage['todo'] = JSON.stringify({'tasks' : []});
       var tasks = JSON.parse(localStorage['todo']).tasks;
       tasks.push(task);
       localStorage['todo'] = JSON.stringify({'tasks': tasks});
+      success(task);
     }
 
     var update = function (task) {
@@ -101,7 +123,6 @@ $(document).ready(function() {
       localStorage['todo'] = JSON.stringify({'tasks': tasks});
     }
 
-    // load sample data.
     if (action === 'load-sample') {
       for (var i = 0; i < 3; i++) {
         var t = new Task();
@@ -110,14 +131,19 @@ $(document).ready(function() {
       }
     }
 
-    // clear all data.
-    if  (action === 'discard-all') {
-      console.log('kill em')
+    if (action === 'discard-all') {
+      localStorage.clear('todo');
+    }
+    
+    if (action === 'read' && model.constructor === Tasks) {
+      if (localStorage['todo']) {
+        success(JSON.parse(localStorage['todo']));  
+      } else {
+        success([]);
+      }
+      
     }
 
-    // retrieve all tasks.
-
-    // create new task.
     if (action === 'create' && model.constructor === Task) {
       save(model);
     }
@@ -125,5 +151,29 @@ $(document).ready(function() {
     if (action === 'update' && model.constructor === Task) {
       update(model);
     }
-  }
+  }  
+  var Tasks = Backbone.Collection.extend({
+
+    model : Task,
+
+    parse : function (response){
+      return response.tasks;
+    },
+
+    loadTodos : function () {
+      this.select(function (t) { return !t.attributes.done})
+          .forEach(function(t) { new MainTaskEntry({model : t }).render();});
+    },
+
+    loadCompleted : function () {
+      this.select(function (t) { return t.attributes.done})
+          .forEach(function (t) { new LastCompletedEntry({model : t}).render();});
+    }
+
+  });
+  
+  window.tasks = new Tasks();
+  tasks.fetch();
+  tasks.loadTodos();
+  tasks.loadCompleted();
 });
